@@ -3,7 +3,10 @@ from typing import Callable, Dict, Any, TYPE_CHECKING, Sequence
 import logging
 import inspect
 from amulet_map_editor.api.opengl.camera import Projection
-from amulet_map_editor.programs.edit.api.behaviour import BlockSelectionBehaviour, StaticSelectionBehaviour
+from amulet_map_editor.programs.edit.api.behaviour import (
+    BlockSelectionBehaviour,
+    StaticSelectionBehaviour,
+)
 from amulet.api.selection import SelectionGroup
 from amulet.api.selection import SelectionBox
 from amulet_map_editor.programs.edit.api.events import (
@@ -24,6 +27,7 @@ FixedOperationType = Callable[
     ["BaseLevel", "Dimension", "SelectionGroup", Dict[str, Any]], OperationReturnType
 ]
 
+
 class FixedFunctionUI(wx.Panel, DefaultOperationUI):
     def __init__(
         self,
@@ -37,7 +41,6 @@ class FixedFunctionUI(wx.Panel, DefaultOperationUI):
         wx.Panel.__init__(self, parent)
         DefaultOperationUI.__init__(self, parent, canvas, world, options_path)
         self._operation = operation
-        
         self.Hide()
         self._sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(self._sizer)
@@ -209,7 +212,6 @@ class FixedFunctionUI(wx.Panel, DefaultOperationUI):
     def _create_checklistbox(self, option_name: str, items: list, all_checked=False):
         self.items = items
         listbox = wx.CheckListBox(self, choices=self.items, name=option_name)
-
         sizer = self._create_horizontal_options_sizer(option_name)
         sizer.Add(listbox, 2, wx.ALIGN_CENTER | wx.TOP, 2)
         if all_checked:
@@ -235,7 +237,7 @@ class FixedFunctionUI(wx.Panel, DefaultOperationUI):
             elif isinstance(window, (wx.FilePickerCtrl, wx.DirPickerCtrl)):
                 options[key] = window.GetPath()
             elif isinstance(window, wx.CheckListBox):
-                options[key] = [ window.GetString(x) for x in window.GetCheckedItems()]
+                options[key] = [window.GetString(x) for x in window.GetCheckedItems()]
         return options
 
     def _run_operation(self, evt):
