@@ -5,12 +5,6 @@ import inspect
 from amulet_map_editor.api.opengl.camera import Projection
 from amulet_map_editor.programs.edit.api.behaviour import (
     BlockSelectionBehaviour,
-    StaticSelectionBehaviour,
-)
-from amulet.api.selection import SelectionGroup
-from amulet.api.selection import SelectionBox
-from amulet_map_editor.programs.edit.api.events import (
-    EVT_SELECTION_CHANGE,
 )
 from amulet_map_editor.api.wx.util.validators import IntValidator
 
@@ -49,20 +43,20 @@ class FixedFunctionUI(wx.Panel, DefaultOperationUI):
         self._run_button = wx.Button(self, label="Run Operation")
         self._run_button.Bind(wx.EVT_BUTTON, self._run_operation)
         self._sizer.Add(self._run_button, 0, wx.ALL | wx.ALIGN_CENTRE_HORIZONTAL, 5)
-        self.selectionenabled = False
+        self.selection_behaviour = False
         self._options: Dict[str, wx.Window] = {}
         self._create_options(options)
         self.Layout()
         self.Show()
 
     def bind_events(self):
-        if self.selectionenabled:
+        if self.selection_behaviour:
             super().bind_events()
             self._selection.bind_events()
             self._selection.enable()
 
     def enable(self):
-        if self.selectionenabled:
+        if self.selection_behaviour:
             self.canvas.camera.projection_mode = Projection.PERSPECTIVE
             self._selection = BlockSelectionBehaviour(self.canvas)
             self._selection.enable()
@@ -89,7 +83,7 @@ class FixedFunctionUI(wx.Panel, DefaultOperationUI):
                 if option_type not in create_functions:
                     raise ValueError(f"Invalid option type {option_type}")
                 if option_type == "selection_behaviour":
-                    self.selectionenabled = True
+                    self.selection_behaviour = True
                 else:
                     create_functions[option_type](option_name, *args)
             except Exception as e:
